@@ -1,0 +1,5 @@
+starlette
+starlette-graphene3
+graphene
+uvicorn[standard]
+graphene_federation

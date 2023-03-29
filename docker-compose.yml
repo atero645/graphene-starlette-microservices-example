@@ -1,0 +1,28 @@
+services:
+  users_service:
+    build: ./src/services/users/
+    image: users_service
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+  tasks_service:
+    build: ./src/services/tasks/
+    image: tasks_service
+    ports:
+      - "8081:80"
+    networks:
+      - app-network
+  graphql-gateway:
+    build: ./src/services/gateway/
+    image: graphql_gateway
+    ports:
+      - "8082:4000"
+    depends_on:
+      - users_service
+      - tasks_service
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
