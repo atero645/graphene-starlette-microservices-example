@@ -3,3 +3,4 @@ starlette-graphene3
 graphene
 uvicorn[standard]
 graphene_federation
+graphene-sqlalchemy==3.0.0b4
