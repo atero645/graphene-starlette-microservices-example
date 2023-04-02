@@ -1,12 +1,15 @@
 const { ApolloServer } = require('apollo-server');
-const { ApolloGateway } = require("@apollo/gateway");
+const { ApolloGateway, IntrospectAndCompose } = require("@apollo/gateway");
 
 const gateway = new ApolloGateway({
-  serviceList: [
-    { name: 'users', url: 'http://users_service/' },
-    { name: 'tasks', url: 'http://tasks_service/' },
-    // more services
-  ],
+
+  supergraphSdl: new IntrospectAndCompose({
+    subgraphs: [
+      { name: 'users', url: 'http://users_service/' },
+      { name: 'tasks', url: 'http://tasks_service/' },
+      // ...additional subgraphs...
+    ]
+  })
 });
 
 const server = new ApolloServer({

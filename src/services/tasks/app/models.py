@@ -1,4 +1,4 @@
-from . import db
+from app import db
 from sqlalchemy import Column, Integer, String
 
 class Task(db.Base):

@@ -1,7 +1,11 @@
-FROM tiangolo/uvicorn-gunicorn-starlette:python3.11
+FROM python:3.11
 
-COPY ./requirements.txt /app/requirements.txt
+WORKDIR /src
 
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+COPY ./requirements.txt /src/requirements.txt
 
-COPY . /app
+RUN pip install --no-cache-dir --upgrade -r /src/requirements.txt
+
+COPY ./app /src/app
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]

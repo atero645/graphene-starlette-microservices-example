@@ -4,29 +4,16 @@ import graphene
 from starlette.applications import Starlette
 from starlette_graphene3 import GraphQLApp, make_graphiql_handler
 from graphene_federation import build_schema
-from . import query
-from . import db
+from app import db
+from app.query import TasksQueryField
+
 
 
 db.init_db()
 
-# @key('id')
-# class Task(graphene.ObjectType):
-#     id = graphene.ID()
-#     name = graphene.String()
-
-
 class Query(graphene.ObjectType):
     
-    tasks = query.TasksQueryField
-    # tasks = graphene.List(Task)
-
-    # def resolve_tasks(root, info):
-    #     return [
-    #             {"id": "task1", "name": "Task1"},
-    #             {"id": "task2", "name": "Task2"},
-    #             {"id": "task3", "name": "Task3"},
-    #         ]
+    tasks = TasksQueryField
 
 
 app = Starlette()
