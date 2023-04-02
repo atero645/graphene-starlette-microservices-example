@@ -1,0 +1,190 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kubernetes.yaml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: graphql-gateway
+  name: graphql-gateway
+spec:
+  ports:
+    - name: "8082"
+      port: 8082
+      targetPort: 4000
+  selector:
+    io.kompose.service: graphql-gateway
+status:
+  loadBalancer: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kubernetes.yaml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: tasks-service
+  name: tasks-service
+spec:
+  ports:
+    - name: "8081"
+      port: 8081
+      targetPort: 80
+  selector:
+    io.kompose.service: tasks-service
+status:
+  loadBalancer: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kubernetes.yaml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: users-service
+  name: users-service
+spec:
+  ports:
+    - name: "8080"
+      port: 8080
+      targetPort: 80
+  selector:
+    io.kompose.service: users-service
+status:
+  loadBalancer: {}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kubernetes.yaml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: graphql-gateway
+  name: graphql-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: graphql-gateway
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kubernetes.yaml
+        kompose.version: 1.28.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/graphql-microservices-app-network: "true"
+        io.kompose.service: graphql-gateway
+    spec:
+      containers:
+        - image: graphql-gateway
+          imagePullPolicy: IfNotPresent
+          name: graphql-gateway
+          ports:
+            - containerPort: 4000
+          resources: {}
+      restartPolicy: Always
+status: {}
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  creationTimestamp: null
+  name: graphql-microservices-app-network
+spec:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              io.kompose.network/graphql-microservices-app-network: "true"
+  podSelector:
+    matchLabels:
+      io.kompose.network/graphql-microservices-app-network: "true"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kubernetes.yaml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: tasks-service
+  name: tasks-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: tasks-service
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kubernetes.yaml
+        kompose.version: 1.28.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/graphql-microservices-app-network: "true"
+        io.kompose.service: tasks-service
+    spec:
+      containers:
+        - image: tasks-service
+          imagePullPolicy: IfNotPresent
+          name: tasks-service
+          ports:
+            - containerPort: 80
+          resources: {}
+      restartPolicy: Always
+status: {}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kubernetes.yaml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: users-service
+  name: users-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: users-service
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kubernetes.yaml
+        kompose.version: 1.28.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/graphql-microservices-app-network: "true"
+        io.kompose.service: users-service
+    spec:
+      containers:
+        - image: users-service
+          imagePullPolicy: IfNotPresent
+          name: users-service
+          ports:
+            - containerPort: 80
+          resources: {}
+      restartPolicy: Always
+status: {}
+
